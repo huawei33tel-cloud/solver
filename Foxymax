@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D.E.F PRO - Admin</title>
+<style>
+body{font-family:sans-serif;background:#0f0f0f;color:white;padding:20px}
+.card{background:#1e1e1e;padding:15px;border-radius:12px;margin-bottom:15px}
+input,button{width:100%;padding:12px;margin-top:8px;border-radius:8px;border:none}
+button{background:#00ff88;color:black;font-weight:bold;cursor:pointer}
+table{width:100%;margin-top:10px;border-collapse:collapse}
+th,td{padding:8px;text-align:left;border-bottom:1px solid #333}
+.valid{color:#00ff88} .attente{color:orange}
+</style>
+</head>
+<body>
+<h2>📘 D.E.F PRO - PANEL ADMIN</h2>
+<p>Remplace ton cahier. 100% gratuit.</p>
+
+<div class="card">
+<h3>Ajouter un PRO-Droppeur</h3>
+<input id="nom" placeholder="Nom du Droppeur">
+<input id="iddef" placeholder="ID ex: DEF-001">
+<input id="solde" type="number" placeholder="Solde ∆FRO">
+<button onclick="ajouter()">AJOUTER</button>
+</div>
+
+<div class="card">
+<h3>Liste des PRO-Droppeurs</h3>
+<table>
+<thead><tr><th>ID</th><th>Nom</th><th>Solde</th><th>Action</th></tr></thead>
+<tbody id="liste"></tbody>
+</table>
+<h4>Total distribué: <span id="total">0</span> ∆FRO</h4>
+</div>
+
+<script>
+let droppeurs = JSON.parse(localStorage.getItem('def_pro') || '[]');
+function afficher(){
+  let html=''; let total=0;
+  droppeurs.forEach((d,i)=>{
+    total+=parseInt(d.solde);
+    html+=`<tr><td>${d.iddef}</td><td>${d.nom}</td><td>${d.solde} ∆FRO</td><td><button onclick="supprimer(${i})">X</button></td></tr>`;
+  });
+  document.getElementById('liste').innerHTML=html;
+  document.getElementById('total').innerText=total;
+  localStorage.setItem('def_pro', JSON.stringify(droppeurs));
+}
+function ajouter(){
+  let nom=document.getElementById('nom').value;
+  let iddef=document.getElementById('iddef').value;
+  let solde=document.getElementById('solde').value;
+  if(!nom || !iddef) return alert('Remplis tout');
+  droppeurs.push({nom,iddef,solde});
+  afficher();
+  document.getElementById('nom').value=''; document.getElementById('iddef').value=''; document.getElementById('solde').value='';
+}
+function supprimer(i){ droppeurs.splice(i,1); afficher(); }
+afficher();
+</script>
+</body>
+</html>
